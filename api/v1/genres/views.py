@@ -9,10 +9,13 @@ from .filters import GenreFilterSet
 
 class GenreListView(generics.ListAPIView):
     """
-    A simple **ViewSet** for viewing genres.
-    ```
-    essai
-    ```
+    This endpoint is the entry point of the **OCMovies API** to browse the
+    available genres.
+
+    The get a list of movies filtered by genre, identify those of interest
+    for you and use them to filter movies on the
+    [main titles entry point here](/api/v1/titles/).
+
     """
 
     http_method_names = ['get']
