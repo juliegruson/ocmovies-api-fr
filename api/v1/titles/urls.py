@@ -1,5 +1,8 @@
 from django.urls import path
 
-app_name = 'titles'
+from .views import MovieTitleListView, MovieTitleDetailView
 
-urlpatterns = []
+urlpatterns = [
+    path('', MovieTitleListView.as_view(), name="movie-list"),
+    path('<int:pk>', MovieTitleDetailView.as_view(), name="movie-detail"),
+]

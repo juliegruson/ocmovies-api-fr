@@ -1,5 +1,7 @@
 from django.urls import path
 
-app_name = 'genres'
+from .views import GenreListView
 
-urlpatterns = []
+urlpatterns = [
+    path('', GenreListView.as_view(), name="genre-list"),
+]

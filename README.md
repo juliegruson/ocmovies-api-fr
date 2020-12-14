@@ -8,9 +8,9 @@ info for individual movies or lists of movies.
 
 ## Installation
 
-This locally-executable API can be installed and executed from [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/) using the following steps. A requirement is to have pipenv already installed on your python installation. If pipenv is not already installed on your computer, refer to [this page](docs/pipenv/installation.md). If you don't have
+This locally-executable API can be installed and executed from [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/) using the following steps. A requirement is to have pipenv already installed on your python installation. If pipenv is not already installed on your computer, refer to [this page](https://docs.pipenv.org/). If you don't have
 pipenv installed and do not want to install it, see the corresponding
-installation procedure below.
+installation procedure below using requirements.txt.
 
 ### Installation and execution with pipenv
 

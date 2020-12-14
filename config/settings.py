@@ -3,10 +3,10 @@ Django settings for OCMovies-API project.
 """
 
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -34,12 +34,13 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
+    'django_extensions',
+    'django_filters',
 ]
 
 PROJECT_APPS = [
     'movies.apps.MoviesConfig',
     'api.v1.genres.apps.GenresConfig',
-    'api.v1.scores.apps.ScoresConfig',
     'api.v1.titles.apps.TitlesConfig',
 ]
 
@@ -127,12 +128,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ]
+    ],
 }
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r'^https?://localhost(?::\d+)?$',
     r'^https?://127\.0\.0\.1(?::\d+)?$',
 ]
+
+FIXTURE_DIRS = [str(BASE_DIR / 'data')]
