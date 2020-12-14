@@ -8,7 +8,7 @@ info for individual movies or lists of movies.
 
 ## Installation
 
-This locally-executable API can be installed and executed from [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/) using the following steps. A requirement is to have pipenv already installed on your python installation. If pipenv is not already installed on your computer, refer to [this page](docs/pipenv/installation.md). If you don't have
+This locally-executable API can be installed and executed from [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/) using the following steps. A requirement is to have pipenv already installed on your python installation. If pipenv is not already installed on your computer, refer to [this page](docs/pipenv/installation.md). If you don't have
 pipenv installed and do not want to install it, see the corresponding
 installation procedure below.
 
@@ -21,9 +21,9 @@ installation procedure below.
 5. Run the server with `pipenv run python manage.py runserver`
 
 When the server is running after step 5 of the procedure, the OCMovies API can
-be requested from endpoints starting with the following base URL: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/).
+be requested from endpoints starting with the following base URL: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/titles/).
 
-Steps 1-4 are only to be done for initial installation. For subsequent launches
+Steps 1-4 are only required for initial installation. For subsequent launches
 of the API, you only have to execute steps 5 from the root folder of the project.
 
 ### Installation and execution without pipenv (using venv and pip)
@@ -39,7 +39,16 @@ of the API, you only have to execute steps 5 from the root folder of the project
 7. Run the server with `python manage.py runserver`
 
 When the server is running after step 7 of the procedure, the OCMovies API can
-be requested from endpoints starting with the following base URL: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/).
+be requested from endpoints starting with the following base URL: [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/).
 
-Steps 1-6 are only to be done for initial installation. For subsequent launches
+Steps 1-6 are only required for initial installation. For subsequent launches
 of the API, you only have to execute steps 4 and 7 from the root folder of the project.
+
+## Usage
+
+One you have launched the server, the can read the documentation through the
+browserable documentation interface of the API by visiting [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/). The current API only provides
+thoses two endpoints:
+
+- Search and filter movies: [http://localhost:8000/api/v1/titles/](http://localhost:8000/api/v1/titles/) using GET-only requests
+- Search the available genres: [http://localhost:8000/api/v1/genres/](http://localhost:8000/api/v1/genres/)
