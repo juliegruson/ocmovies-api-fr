@@ -1,4 +1,15 @@
+"""Implementation of the movies models.
+
+This module is part of the OCMovies-API project and implements the models
+responsible to describe the business object representing movies and their 
+related data (country, language, contributors, etc.).
+
+"""
+
 from django.db import models
+from django.urls import reverse
+
+from . import managers
 
 
 class Movie(models.Model):
@@ -12,9 +23,15 @@ class Movie(models.Model):
     duration = models.IntegerField('movie duration')
     description = models.TextField('movie short description', blank=True)
     long_description = models.TextField('movie long description', blank=True)
-    avg_vote = models.IntegerField('average user vote')
-    imdb_score = models.IntegerField('movie imdb score')
-    metascore = models.IntegerField('movie metascore', null=True)
+    avg_vote = models.DecimalField(
+        'average user vote', max_digits=3, decimal_places=1
+    )
+    imdb_score = models.DecimalField(
+        'movie imdb score', max_digits=3, decimal_places=1
+    )
+    metascore = models.DecimalField(
+        'movie metascore', max_digits=5, decimal_places=1, null=True
+    )
     votes = models.IntegerField('number of votes')
     budget = models.BigIntegerField('movie budget', null=True)
     budget_currency = models.CharField(
@@ -26,11 +43,13 @@ class Movie(models.Model):
     worldwide_gross_income = models.BigIntegerField(
         'movie gross income worldwide', null=True
     )
-    reviews_from_critics = models.IntegerField(
+    reviews_from_users = models.IntegerField(
         'number of reviews from users', null=True
     )
-    image_url = models.URLField('poster image url', null=True, blank=True)
-    url = models.URLField('movie imdb url')
+    reviews_from_critics = models.IntegerField(
+        'number of reviews from critics', null=True
+    )
+    image_url = models.URLField('poster image url', null=True)
 
     actors = models.ManyToManyField(
         'Contributor', through='MovieActor', related_name='movies_as_actor'
@@ -53,6 +72,12 @@ class Movie(models.Model):
         'Company', on_delete=models.SET_NULL, related_name='movies', null=True
     )
 
+    objects = managers.MovieManager()
+
+    class Meta:
+        ordering = ['id']
+        verbose_name_plural = 'movies'
+
     def __str__(self):
         return f'{self.title} ({self.imdb_title_id})'
 
@@ -61,41 +86,135 @@ class Movie(models.Model):
         """Movie IMDB unique id."""
         return f"tt{self.id:07d}"
 
+    @property
+    def imdb_url(self):
+        """URL of the movie on the IMDB website."""
+        return f"https://www.imdb.com/title/{self.imdb_title_id}/"
+
+    @property
+    def usa_gross_income_currency(self):
+        return 'USD'
+
+    @property
+    def worldwide_gross_income_currency(self):
+        return 'USD'
+
+    def get_absolute_url(self):
+        return reverse('movie-detail', kwargs={'pk': self.id})
+
+    def add_directors(self, *directors):
+        """Adds one or several positioned directors to the current movie."""
+        n_directors = self.directors.count()
+        for position, director in enumerate(directors, start=n_directors + 1):
+            self.directors.add(
+                director, through_defaults={'position': position}
+            )
+
+    def add_actors(self, *actors):
+        """Adds one or several positioned actors to the current movie."""
+        n_actors = self.actors.count()
+        for position, actor in enumerate(actors, start=n_actors + 1):
+            self.actors.add(actor, through_defaults={'position': position})
+
+    def add_writers(self, *writers):
+        """Adds one or several positioned writers to the current movie."""
+        n_writers = self.writers.count()
+        for position, writer in enumerate(writers, start=n_writers + 1):
+            self.writers.add(writer, through_defaults={'position': position})
+
+    def add_genres(self, *genres):
+        """Adds one or several genres to the current movie."""
+        for genre in genres:
+            self.genres.add(genre)
+
+    def add_countries(self, *countries):
+        """Adds one or several countries to the current movie."""
+        for country in countries:
+            self.countries.add(country)
+
+    def add_languages(self, *languages):
+        """Adds one or several languages to the current movie."""
+        for language in languages:
+            self.languages.add(language)
+
 
 class Contributor(models.Model):
     """Represents a person having contributed to a movie either as actor,
     director or writer."""
 
-    full_name = models.CharField(
+    name = models.CharField(
         'contributor full name', max_length=200, unique=True
     )
 
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'contributors'
+
     def __str__(self):
-        return self.full_name
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name
 
 
 class MovieDirector(models.Model):
     """Represents the association between a movie and its director(s)."""
 
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
-    contributor = models.ForeignKey('Contributor', on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        'Movie', on_delete=models.CASCADE, related_name="moviedirectors"
+    )
+    director = models.ForeignKey(
+        'Contributor', on_delete=models.CASCADE, related_name="directormovies"
+    )
     position = models.IntegerField('position in the directors list', null=True)
+
+    class Meta:
+        ordering = ['movie__id', 'position']
+        verbose_name_plural = 'moviedirectors'
+
+    def __str__(self):
+        return f"{self.movie} - {self.director} ({self.position})"
 
 
 class MovieActor(models.Model):
     """Represents the association between a movie and its actors(s)."""
 
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
-    contributor = models.ForeignKey('Contributor', on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        'Movie', on_delete=models.CASCADE, related_name="movieactors"
+    )
+    actor = models.ForeignKey(
+        'Contributor', on_delete=models.CASCADE, related_name="movieactors"
+    )
     position = models.IntegerField('position in the directors list', null=True)
+
+    class Meta:
+        ordering = ['movie__id', 'position']
+        verbose_name_plural = 'movieactors'
+
+    def __str__(self):
+        return f"{self.movie} - {self.actor} ({self.position})"
 
 
 class MovieWriter(models.Model):
     """Represents the association between a movie and its writer(s)."""
 
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
-    contributor = models.ForeignKey('Contributor', on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        'Movie', on_delete=models.CASCADE, related_name="moviewriters"
+    )
+    writer = models.ForeignKey(
+        'Contributor', on_delete=models.CASCADE, related_name="writermovies"
+    )
     position = models.IntegerField('position in the directors list', null=True)
+
+    class Meta:
+        ordering = ['movie__id', 'position']
+        verbose_name_plural = 'moviewriters'
+
+    def __str__(self):
+        return f"{self.movie} - {self.writer} ({self.position})"
 
 
 class Genre(models.Model):
@@ -103,11 +222,37 @@ class Genre(models.Model):
 
     name = models.CharField('genre of the movie', max_length=200, unique=True)
 
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'genres'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name
+
 
 class Country(models.Model):
     """Represents the country where a movie was created."""
 
     name = models.CharField('country name', max_length=200, unique=True)
+
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'countries'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name
 
 
 class Language(models.Model):
@@ -115,11 +260,37 @@ class Language(models.Model):
 
     name = models.CharField('language name', max_length=200, unique=True)
 
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'languages'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name
+
 
 class Rating(models.Model):
     """Represents a rating attributed to a movie."""
 
     name = models.CharField('rating name', max_length=200, unique=True)
+
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'ratings'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name
 
 
 class Company(models.Model):
@@ -128,3 +299,16 @@ class Company(models.Model):
     name = models.CharField(
         'production company name', max_length=200, unique=True
     )
+
+    objects = managers.UniqueNameManager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'companies'
+
+    def __str__(self):
+        return self.name
+
+    def natural_key(self):
+        """Returns the natural key used for fixture serialization."""
+        return self.name

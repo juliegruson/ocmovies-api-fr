@@ -1,3 +1,6 @@
+"""Registration of the movies app models for their management through the 
+admin interface."""
+
 from django.contrib import admin
 
 from . import models
