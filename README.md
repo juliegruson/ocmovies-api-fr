@@ -12,7 +12,7 @@ This locally-executable API can be installed and executed from [http://localhost
 
 ### Installation and execution with pipenv
 
-1. Clone this repository using `$ git clone https://github.com/pythonmentor/ocmovies-api.git`
+1. Clone this repository using `$ git clone https://github.com/pythonmentor/ocmovies-api.git` (you can also download the code using [as a zip file](https://github.com/pythonmentor/ocmovies-api/archive/master.zip))
 2. Move to the ocmovies-api root folder with `$ cd ocmovies-api`
 3. Install project dependencies with `pipenv install` 
 4. Create and populate project database with `pipenv run python manage.py create_db`
