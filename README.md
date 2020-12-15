@@ -24,6 +24,20 @@ be requested from endpoints starting with the following base URL: [http://localh
 Steps 1-4 are only required for inigtial installation. For subsequent launches
 of the API, you only have to execute steps 5 from the root folder of the project.
 
+### Installation and execution without pipenv (using venv and pip)
+
+1. Clone this repository using $ git clone `https://github.com/pythonmentor/ocmovies-api.git` (you can also download the code using [as a zip file](https://github.com/pythonmentor/ocmovies-api/archive/master.zip))
+2. Move to the ocmovies-api root folder with `$ cd ocmovies-api`
+3. Create a virtual environment for the project with `$ python -m venv env` on windows or `$ python3 -m venv env` on macos or linux.
+4. Activate the virtual environment with `$ env\Scripts\activate` on windows or `$ source env/bin/activate` on macos or linux.
+5. Install project dependencies with `$ pip install -r requirements.txt`
+6. Create and populate project database with `$ python manage.py create_db`
+7. Run the server with `$ python manage.py runserver`
+
+When the server is running after step 7 of the procedure, the OCMovies API can be requested from endpoints starting with the following base URL: http://localhost:8000/api/v1/titles/.
+
+Steps 1-6 are only required for initial installation. For subsequent launches of the API, you only have to execute steps 4 and 7 from the root folder of the project.
+
 ## Usage and detailed endpoint documentation
 
 One you have launched the server, the can read the documentation through the
