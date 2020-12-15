@@ -21,7 +21,7 @@ This locally-executable API can be installed and executed from [http://localhost
 When the server is running after step 5 of the procedure, the OCMovies API can
 be requested from endpoints starting with the following base URL: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/titles/).
 
-Steps 1-4 are only required for initial installation. For subsequent launches
+Steps 1-4 are only required for inigtial installation. For subsequent launches
 of the API, you only have to execute steps 5 from the root folder of the project.
 
 ## Usage and detailed endpoint documentation
