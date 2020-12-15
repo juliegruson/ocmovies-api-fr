@@ -17,16 +17,16 @@ class TitleFilterSet(filters.FilterSet):
     title_contains = filters.CharFilter(
         field_name="title", lookup_expr='icontains'
     )
-    directors = filters.CharFilter(
+    director = filters.CharFilter(
         field_name="directors", lookup_expr='name__iexact'
     )
-    directors_contains = filters.CharFilter(
+    director_contains = filters.CharFilter(
         field_name="directors", lookup_expr='name__icontains'
     )
-    writers = filters.CharFilter(
+    writer = filters.CharFilter(
         field_name="writers", lookup_expr='name__iexact'
     )
-    writers_contains = filters.CharFilter(
+    writer_contains = filters.CharFilter(
         field_name="writers", lookup_expr='name__icontains'
     )
     actor = filters.CharFilter(field_name="actors", lookup_expr='name__iexact')
